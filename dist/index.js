@@ -39,14 +39,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const admin = __importStar(require("firebase-admin"));
 const path_1 = __importDefault(require("path"));
+const ingestionRoutes_1 = __importDefault(require("./ingestion/routes/ingestionRoutes"));
 // Initialize Firebase Admin SDK
 admin.initializeApp({
     credential: admin.credential.applicationDefault(),
     databaseURL: 'https://thedasheplur.firebaseio.com'
 });
 const app = (0, express_1.default)();
+// Middleware to parse JSON request bodies
+app.use(express_1.default.json());
 // Serve static files from the 'public' directory
 app.use(express_1.default.static(path_1.default.join(__dirname, '../public')));
+// Mount the ingestion routes
+app.use('/ingest', ingestionRoutes_1.default);
 app.get('/api/hello', (req, res) => {
     const name = process.env.NAME || 'World';
     res.send(`Hello ${name}!`);
