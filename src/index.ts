@@ -1,18 +1,20 @@
 
 import express from 'express';
 import * as admin from 'firebase-admin';
+import path from 'path';
 
 // Initialize Firebase Admin SDK
-const serviceAccount = require('../serviceAccountKey.json');
-
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.applicationDefault(),
   databaseURL: 'https://thedasheplur.firebaseio.com'
 });
 
 const app = express();
 
-app.get('/', (req, res) => {
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, '../public')));
+
+app.get('/api/hello', (req, res) => {
   const name = process.env.NAME || 'World';
   res.send(`Hello ${name}!`);
 });
